@@ -254,8 +254,61 @@ async function callGraphAPIDownload(accessToken, path) {
   });
 }
 
+/**
+ * Makes a request to the Microsoft Graph API and returns the raw response body
+ * as a Buffer, without JSON parsing. Used for binary content such as large
+ * attachment downloads via the `/$value` endpoint.
+ * @param {string} accessToken - The access token for authentication
+ * @param {string} path - API endpoint path
+ * @returns {Promise<Buffer>} - The raw response body
+ */
+async function callGraphAPIRaw(accessToken, path) {
+  if (config.USE_TEST_MODE && accessToken.startsWith('test_access_token_')) {
+    console.error(`TEST MODE: Simulating raw API call for ${path}`);
+    return Buffer.from('');
+  }
+
+  return new Promise((resolve, reject) => {
+    const fullUrl = path.startsWith('http://') || path.startsWith('https://')
+      ? path
+      : `${config.GRAPH_API_ENDPOINT}${path}`;
+
+    console.error(`Making raw API call: GET ${fullUrl}`);
+
+    const options = {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      }
+    };
+
+    const req = https.request(fullUrl, options, (res) => {
+      const chunks = [];
+
+      res.on('data', (chunk) => chunks.push(chunk));
+
+      res.on('end', () => {
+        if (res.statusCode >= 200 && res.statusCode < 300) {
+          resolve(Buffer.concat(chunks));
+        } else if (res.statusCode === 401) {
+          reject(new Error('UNAUTHORIZED'));
+        } else {
+          reject(new Error(`API call failed with status ${res.statusCode}: ${Buffer.concat(chunks).toString()}`));
+        }
+      });
+    });
+
+    req.on('error', (error) => {
+      reject(new Error(`Network error during API call: ${error.message}`));
+    });
+
+    req.end();
+  });
+}
+
 module.exports = {
   callGraphAPI,
   callGraphAPIPaginated,
-  callGraphAPIDownload
+  callGraphAPIDownload,
+  callGraphAPIRaw
 };

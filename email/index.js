@@ -8,6 +8,8 @@ const handleSendEmail = require('./send');
 const handleDraftEmail = require('./draft');
 const handleMarkAsRead = require('./mark-as-read');
 const handleDeleteEmail = require('./delete');
+const handleListAttachments = require('./list-attachments');
+const handleDownloadAttachment = require('./download-attachment');
 
 // Email tool definitions
 const emailTools = [
@@ -209,6 +211,48 @@ const emailTools = [
       required: ["id"]
     },
     handler: handleDeleteEmail
+  },
+  {
+    name: "list-attachments",
+    description: "Lists the attachments on a specific email (name, size, content type, and attachment ID).",
+    inputSchema: {
+      type: "object",
+      properties: {
+        id: {
+          type: "string",
+          description: "ID of the email to list attachments for"
+        }
+      },
+      required: ["id"]
+    },
+    handler: handleListAttachments
+  },
+  {
+    name: "download-attachment",
+    description: "Downloads a file attachment from an email and saves it to the local filesystem. If the email has exactly one file attachment, attachmentId/name can be omitted.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        id: {
+          type: "string",
+          description: "ID of the email the attachment belongs to"
+        },
+        attachmentId: {
+          type: "string",
+          description: "ID of the attachment to download (from 'list-attachments'). Optional if the email has exactly one file attachment."
+        },
+        name: {
+          type: "string",
+          description: "File name of the attachment to download, as an alternative to attachmentId"
+        },
+        destPath: {
+          type: "string",
+          description: "Local directory to save into (attachment's original name is used), or a full destination file path. A path with no file extension, ending in a slash, or that already exists as a directory is treated as a directory."
+        }
+      },
+      required: ["id", "destPath"]
+    },
+    handler: handleDownloadAttachment
   }
 ];
 
@@ -220,5 +264,7 @@ module.exports = {
   handleSendEmail,
   handleDraftEmail,
   handleMarkAsRead,
-  handleDeleteEmail
+  handleDeleteEmail,
+  handleListAttachments,
+  handleDownloadAttachment
 };

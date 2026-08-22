@@ -86,6 +86,9 @@ A comprehensive MCP (Model Context Protocol) server that connects Claude with Mi
 | `read-email` | Read email content |
 | `send-email` | Send a new email |
 | `mark-as-read` | Mark email as read/unread |
+| `delete-email` | Delete an email (or hard-delete with `permanent`) |
+| `list-attachments` | List attachments on an email |
+| `download-attachment` | Download an email attachment to the local filesystem |
 | `list-events` | List calendar events |
 | `create-event` | Create calendar event |
 | `accept-event` | Accept event invitation |
