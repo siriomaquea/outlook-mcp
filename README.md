@@ -33,7 +33,10 @@ A comprehensive MCP (Model Context Protocol) server that connects Claude with Mi
 │   ├── search.js            # Search emails
 │   ├── read.js              # Read email
 │   ├── send.js              # Send email
-│   └── mark-as-read.js      # Mark email read/unread
+│   ├── mark-as-read.js      # Mark email read/unread
+│   ├── delete.js            # Delete email
+│   ├── list-attachments.js  # List email attachments
+│   └── download-attachment.js # Download an attachment to local disk
 ├── folder/                  # Folder functionality
 │   ├── index.js             # Folder exports
 │   ├── list.js              # List folders
@@ -69,7 +72,7 @@ A comprehensive MCP (Model Context Protocol) server that connects Claude with Mi
 ## Features
 
 - **Authentication**: OAuth 2.0 authentication with Microsoft Graph API (+ Flow API for Power Automate)
-- **Email Management**: List, search, read, send, and organize emails
+- **Email Management**: List, search, read, send, and organize emails; list and download attachments to local disk
 - **Calendar Management**: List, create, accept, decline, and delete calendar events
 - **OneDrive Integration**: List, search, upload, download, and share files
 - **Power Automate**: List environments/flows, trigger flows, view run history
